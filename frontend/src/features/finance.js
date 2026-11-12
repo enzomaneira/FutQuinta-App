@@ -34,6 +34,8 @@ function useInvalidateFinance() {
   return () => {
     queryClient.invalidateQueries({ queryKey: financeKeys.all })
     queryClient.invalidateQueries({ queryKey: ['players'] }) // situação de pagamento
+    queryClient.invalidateQueries({ queryKey: ['home'] })
+    queryClient.invalidateQueries({ queryKey: ['games', 'charges'] })
   }
 }
 

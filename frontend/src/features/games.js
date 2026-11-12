@@ -58,6 +58,11 @@ export function useGameAction(gameId) {
       const current = queryClient.getQueryData(gameKeys.current)
       if (current?.id === game.id) queryClient.setQueryData(gameKeys.current, game)
       queryClient.invalidateQueries({ queryKey: ['games', 'calendar'] })
+      queryClient.invalidateQueries({ queryKey: ['games', 'history'] })
+      queryClient.invalidateQueries({ queryKey: ['games', 'charges', game.id] })
+      queryClient.invalidateQueries({ queryKey: ['home'] })
+      queryClient.invalidateQueries({ queryKey: ['players', 'profile'] })
+      queryClient.invalidateQueries({ queryKey: ['finance'] }) // cobrança do avulso
       if (success) toast(success)
     },
   })

@@ -237,16 +237,15 @@ def _confirm(db, game, player_id, now, source) -> Attendance:
 def _cancel(db, game, player_id, now, source) -> Attendance:
     _ensure_editable(game)
     attendance = find_attendance(db, game.id, player_id)
-    if attendance is None or attendance.status not in (S.PENDING, S.CONFIRMED, S.QUEUED):
+    if attendance is not None and attendance.status == S.QUEUED:
+        raise DomainError("Este jogador está na fila: use \"Tirar da fila\"")
+    if attendance is None or attendance.status not in (S.PENDING, S.CONFIRMED):
         raise DomainError("Este jogador não está na lista deste jogo")
-    was_in_list = attendance.status != S.QUEUED
     attendance.status = S.CANCELLED
     attendance.responded_at = now
     attendance.source = source
-    # Sair da fila não é desistência; desmarcar depois do limite é
-    attendance.late_cancellation = was_in_list and now >= late_cancellation_at(
-        db, game.starts_at
-    )
+    # Desmarcar a partir do limite (padrão quinta 18h) é "em cima da hora"
+    attendance.late_cancellation = now >= late_cancellation_at(db, game.starts_at)
     if attendance.slot_type == SlotType.DROP_IN:
         billing.waive_drop_in_charge(db, player_id, game)
     return attendance

@@ -32,6 +32,7 @@ export const router = createBrowserRouter([
       { path: 'financeiro', element: <FinancePage /> },
       { path: 'avulsos', element: <DropInsPage /> },
       { path: 'historico', element: <HistoryPage /> },
+      { path: 'historico/:id', element: <HistoryPage /> },
       { path: 'configuracoes', element: <SettingsPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],

@@ -15,6 +15,7 @@ const EXTRA_TITLES = {
 const DETAIL_PAGES = [
   { prefix: '/jogadores/', title: 'Jogador', back: '/jogadores' },
   { prefix: '/jogos/', title: 'Jogo', back: '/calendario' },
+  { prefix: '/historico/', title: 'Jogo realizado', back: '/historico' },
 ]
 
 function pageInfo(pathname) {

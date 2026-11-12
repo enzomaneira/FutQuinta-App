@@ -59,19 +59,19 @@ def get_calendar(db: DbSession, month: str | None = None):
         month=first.strftime("%Y-%m"),
         game_weekday=int(get_setting(db, "game_weekday")),
         due_day=int(get_setting(db, "monthly_due_day")),
-        games=[_summary(db, g) for g in games],
+        games=[game_summary(db, g) for g in games],
     )
 
 
 @router.get("/games/current", response_model=GameDetail | None)
 def get_current_game(db: DbSession):
     game = games_service.current_game(db)
-    return _detail(db, game) if game else None
+    return game_detail(db, game) if game else None
 
 
 @router.get("/games/{game_id}", response_model=GameDetail)
 def get_game(game_id: int, db: DbSession):
-    return _detail(db, att.get_game(db, game_id))
+    return game_detail(db, att.get_game(db, game_id))
 
 
 # --- jogo ---
@@ -79,27 +79,27 @@ def get_game(game_id: int, db: DbSession):
 
 @router.post("/games", response_model=GameDetail, status_code=status.HTTP_201_CREATED)
 def create_game(body: CreateGameIn, db: DbSession):
-    return _detail(db, games_service.create_game(db, body.date))
+    return game_detail(db, games_service.create_game(db, body.date))
 
 
 @router.post("/games/{game_id}/close", response_model=GameDetail)
 def close_list(game_id: int, db: DbSession):
-    return _detail(db, games_service.close_list(db, game_id))
+    return game_detail(db, games_service.close_list(db, game_id))
 
 
 @router.post("/games/{game_id}/reopen", response_model=GameDetail)
 def reopen_list(game_id: int, db: DbSession):
-    return _detail(db, games_service.reopen_list(db, game_id))
+    return game_detail(db, games_service.reopen_list(db, game_id))
 
 
 @router.post("/games/{game_id}/cancel", response_model=GameDetail)
 def cancel_game(game_id: int, db: DbSession):
-    return _detail(db, games_service.cancel_game(db, game_id))
+    return game_detail(db, games_service.cancel_game(db, game_id))
 
 
 @router.put("/games/{game_id}/bib", response_model=GameDetail)
 def set_bib(game_id: int, body: BibIn, db: DbSession):
-    return _detail(db, games_service.set_bib_player(db, game_id, body.player_id))
+    return game_detail(db, games_service.set_bib_player(db, game_id, body.player_id))
 
 
 # --- lista ---
@@ -108,49 +108,49 @@ def set_bib(game_id: int, body: BibIn, db: DbSession):
 @router.post("/games/{game_id}/players/{player_id}/confirm", response_model=GameDetail)
 def confirm(game_id: int, player_id: int, db: DbSession):
     att.confirm_player(db, game_id, player_id)
-    return _detail(db, att.get_game(db, game_id))
+    return game_detail(db, att.get_game(db, game_id))
 
 
 @router.post("/games/{game_id}/players/{player_id}/cancel", response_model=GameDetail)
 def cancel(game_id: int, player_id: int, db: DbSession):
     att.cancel_player(db, game_id, player_id)
-    return _detail(db, att.get_game(db, game_id))
+    return game_detail(db, att.get_game(db, game_id))
 
 
 @router.post("/games/{game_id}/players/{player_id}/presence", response_model=GameDetail)
 def presence(game_id: int, player_id: int, body: PresenceIn, db: DbSession):
     att.set_presence(db, game_id, player_id, body.present)
-    return _detail(db, att.get_game(db, game_id))
+    return game_detail(db, att.get_game(db, game_id))
 
 
 @router.post("/games/{game_id}/substitute", response_model=GameDetail)
 def substitute(game_id: int, body: SubstituteIn, db: DbSession):
     att.substitute(db, game_id, body.out_player_id, body.in_player_id)
-    return _detail(db, att.get_game(db, game_id))
+    return game_detail(db, att.get_game(db, game_id))
 
 
 @router.post("/games/{game_id}/queue", response_model=GameDetail)
 def join_queue(game_id: int, body: QueueIn, db: DbSession):
     queue_service.join_queue(db, game_id, body.player_id)
-    return _detail(db, att.get_game(db, game_id))
+    return game_detail(db, att.get_game(db, game_id))
 
 
 @router.delete("/games/{game_id}/queue/{player_id}", response_model=GameDetail)
 def leave_queue(game_id: int, player_id: int, db: DbSession):
     queue_service.leave_queue(db, game_id, player_id)
-    return _detail(db, att.get_game(db, game_id))
+    return game_detail(db, att.get_game(db, game_id))
 
 
 @router.post("/games/{game_id}/call-next", response_model=GameDetail)
 def call_next(game_id: int, body: CallNextIn, db: DbSession):
     att.call_next(db, game_id, body.position)
-    return _detail(db, att.get_game(db, game_id))
+    return game_detail(db, att.get_game(db, game_id))
 
 
 # --- montagem das respostas ---
 
 
-def _summary(db: Session, game: Game) -> GameSummary:
+def game_summary(db: Session, game: Game) -> GameSummary:
     usage = att.slot_usage(db, game)
     return GameSummary(**_summary_fields(game, usage))
 
@@ -168,7 +168,7 @@ def _summary_fields(game: Game, usage) -> dict:
     )
 
 
-def _detail(db: Session, game: Game) -> GameDetail:
+def game_detail(db: Session, game: Game) -> GameDetail:
     db.refresh(game)
     now = now_utc()
     usage = att.slot_usage(db, game)

@@ -40,7 +40,7 @@ def _month_bounds(month: str | None) -> tuple[str, date, date]:
     return billing.month_reference(year, mon), first, last
 
 
-def _charge_out(db: Session, charge: Charge, player: Player) -> ChargeOut:
+def charge_out(db: Session, charge: Charge, player: Player) -> ChargeOut:
     payment = billing.last_payment(db, charge.id) if charge.status.value == "paid" else None
     return ChargeOut(
         id=charge.id,
@@ -60,7 +60,7 @@ def _charge_out(db: Session, charge: Charge, player: Player) -> ChargeOut:
 
 def _charge_by_id(db: Session, charge_id: int) -> ChargeOut:
     charge = billing.get_charge(db, charge_id)
-    return _charge_out(db, charge, db.get(Player, charge.player_id))
+    return charge_out(db, charge, db.get(Player, charge.player_id))
 
 
 # --- caixa e extrato ---
@@ -106,7 +106,7 @@ def get_statement(db: DbSession, month: str | None = None):
 def monthly_fees(db: DbSession, month: str | None = None):
     reference, _, _ = _month_bounds(month)
     rows = billing.list_charges(db, type=ChargeType.MONTHLY_FEE, reference=reference)
-    return [_charge_out(db, c, p) for c, p in rows]
+    return [charge_out(db, c, p) for c, p in rows]
 
 
 @router.post("/finance/monthly-fees/generate", response_model=GenerateOut)
@@ -120,13 +120,13 @@ def generate_monthly_fees(body: GenerateIn, db: DbSession):
 def drop_in_charges(db: DbSession, month: str | None = None):
     _, first, last = _month_bounds(month)
     rows = billing.list_charges(db, type=ChargeType.DROP_IN, due_from=first, due_to=last)
-    return [_charge_out(db, c, p) for c, p in rows]
+    return [charge_out(db, c, p) for c, p in rows]
 
 
 @router.get("/finance/open-charges", response_model=list[ChargeOut])
 def open_charges(db: DbSession, player_id: int | None = None):
     rows = billing.list_charges(db, open_only=True, player_id=player_id)
-    return [_charge_out(db, c, p) for c, p in rows]
+    return [charge_out(db, c, p) for c, p in rows]
 
 
 @router.post("/charges/{charge_id}/pay", response_model=ChargeOut)

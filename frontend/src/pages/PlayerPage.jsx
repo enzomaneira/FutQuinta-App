@@ -2,7 +2,7 @@ import { MessageCircle, Pencil, Phone } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
-import Placeholder from '../components/Placeholder.jsx'
+import PlayerProfileSections from '../components/PlayerProfileSections.jsx'
 import PlayerFormSheet from '../components/PlayerFormSheet.jsx'
 import { Badge, Button, Card, EmptyState, LoadingList } from '../components/ui.jsx'
 import { useDeletePlayer, usePlayer, useUpdatePlayer } from '../features/players.js'
@@ -88,9 +88,7 @@ export default function PlayerPage() {
         )}
       </Card>
 
-      <Placeholder title="Estatísticas e pagamentos" stage="1.5">
-        Jogos, desmarcações, presença, coletes e histórico de pagamentos.
-      </Placeholder>
+      <PlayerProfileSections playerId={player.id} />
 
       <div className="space-y-2">
         <Button variant="secondary" className="w-full" onClick={toggleActive} disabled={update.isPending}>

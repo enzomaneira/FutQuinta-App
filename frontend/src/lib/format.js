@@ -100,3 +100,8 @@ export function formatShortDate(isoDate) {
 export function whatsappUrl(e164) {
   return `https://wa.me/${e164.replace(/\D/g, '')}`
 }
+
+// Abre o app de mapas do celular (Google Maps / Apple Maps via navegador)
+export function mapsUrl(lat, lng) {
+  return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
+}

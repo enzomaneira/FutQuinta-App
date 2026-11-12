@@ -83,18 +83,17 @@ def join_queue(
     return attendance
 
 
-def leave_queue(
-    db: Session, game_id: int, player_id: int, *, now: datetime | None = None
-) -> Attendance:
-    """Tira o avulso da fila (desistiu antes de ser chamado)."""
+def leave_queue(db: Session, game_id: int, player_id: int) -> None:
+    """Tira o avulso da fila (desistiu antes de ser chamado).
+
+    O registro é apagado: sair da fila não é desmarcação e não entra nas
+    estatísticas. Se ele voltar, entra no fim da fila.
+    """
     attendance = _find(db, game_id, player_id)
     if attendance is None or attendance.status != AttendanceStatus.QUEUED:
         raise DomainError("Este jogador não está na fila")
-    attendance.status = AttendanceStatus.CANCELLED
-    attendance.responded_at = now or now_utc()
+    db.delete(attendance)
     db.commit()
-    db.refresh(attendance)
-    return attendance
 
 
 def list_queue(

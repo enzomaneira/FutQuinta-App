@@ -147,8 +147,10 @@ def test_sair_da_fila_nao_e_desistencia(db, full_game, make_player):
     game, _ = full_game
     avulso = make_player("Avulso")
     queue.join_queue(db, game.id, avulso.id, now=TUE)
-    attendance = att.cancel_player(db, game.id, avulso.id, now=sp(19, 20))
-    assert attendance.late_cancellation is False
+    with pytest.raises(DomainError, match="Tirar da fila"):
+        att.cancel_player(db, game.id, avulso.id, now=sp(19, 20))
+    queue.leave_queue(db, game.id, avulso.id)
+    assert att.find_attendance(db, game.id, avulso.id) is None  # não conta como desmarcação
 
 
 def test_reconfirmar_limpa_a_marca_de_em_cima_da_hora(db, full_game):

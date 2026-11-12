@@ -54,8 +54,7 @@ def test_quem_sai_e_volta_vai_para_o_fim(db, make_game, make_player):
     a, b = make_player("A"), make_player("B")
     queue.join_queue(db, game.id, a.id, now=minutes(1))
     queue.join_queue(db, game.id, b.id, now=minutes(2))
-    left = queue.leave_queue(db, game.id, a.id, now=minutes(3))
-    assert left.status == AttendanceStatus.CANCELLED
+    queue.leave_queue(db, game.id, a.id)
     assert names(queue.list_queue(db, game.id), db) == ["B"]
     queue.join_queue(db, game.id, a.id, now=minutes(4))
     assert names(queue.list_queue(db, game.id), db) == ["B", "A"]
