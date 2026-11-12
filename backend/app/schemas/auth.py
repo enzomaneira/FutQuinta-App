@@ -1,11 +1,12 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.enums import UserRole
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
-    password: str
+    # No login só procuramos o usuário: formato inválido vira "senha incorreta"
+    email: str = Field(max_length=255)
+    password: str = Field(max_length=200)
 
 
 class TokenResponse(BaseModel):

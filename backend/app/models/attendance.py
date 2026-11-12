@@ -11,7 +11,7 @@ from app.models.mixins import TimestampMixin
 class Attendance(TimestampMixin, Base):
     """Presença de um jogador em um jogo.
 
-    Para avulsos, `created_at` define a posição na fila (ordem de candidatura).
+    Para avulsos, `queued_at` define a posição na fila (ordem de candidatura).
     """
 
     __tablename__ = "attendances"
@@ -27,6 +27,9 @@ class Attendance(TimestampMixin, Base):
     status: Mapped[AttendanceStatus] = mapped_column(db_enum(AttendanceStatus))
     slot_type: Mapped[SlotType] = mapped_column(db_enum(SlotType))
     responded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Momento em que o avulso entrou na fila; define a ordem de chamada.
+    # Se ele sair e voltar, recebe um horário novo (vai para o fim da fila).
+    queued_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     late_cancellation: Mapped[bool] = mapped_column(default=False)  # em cima da hora
     source: Mapped[AttendanceSource] = mapped_column(
         db_enum(AttendanceSource), default=AttendanceSource.APP

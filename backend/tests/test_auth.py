@@ -38,6 +38,10 @@ def test_login_email_inexistente(client):
     assert login(client, "ninguem@exemplo.com", PASSWORD).status_code == 401
 
 
+def test_login_email_mal_formado_da_401_e_nao_422(client):
+    assert login(client, "nao-e-email", PASSWORD).status_code == 401
+
+
 def test_login_usuario_inativo(client, db, organizer):
     organizer.active = False
     db.commit()

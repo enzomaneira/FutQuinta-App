@@ -1,6 +1,6 @@
-import { Menu } from 'lucide-react'
+import { ChevronLeft, Menu } from 'lucide-react'
 import { useCallback, useState } from 'react'
-import { Outlet, useLocation } from 'react-router'
+import { Outlet, useLocation, useNavigate } from 'react-router'
 
 import BottomNav, { NAV_ITEMS } from './BottomNav.jsx'
 import MoreSheet from './MoreSheet.jsx'
@@ -11,14 +11,21 @@ const EXTRA_TITLES = {
   '/configuracoes': 'Configurações',
 }
 
-function pageTitle(pathname) {
+// Telas de detalhe: título próprio e botão de voltar
+const DETAIL_PAGES = [{ prefix: '/jogadores/', title: 'Jogador', back: '/jogadores' }]
+
+function pageInfo(pathname) {
+  const detail = DETAIL_PAGES.find((d) => pathname.startsWith(d.prefix))
+  if (detail) return { title: detail.title, back: detail.back }
   const item = NAV_ITEMS.find((i) => i.to === pathname)
-  return item?.label ?? EXTRA_TITLES[pathname] ?? 'App Futebol'
+  return { title: item?.label ?? EXTRA_TITLES[pathname] ?? 'App Futebol' }
 }
 
 // Estrutura das telas logadas: cabeçalho com "Mais" + conteúdo + navegação inferior
 export default function AppLayout() {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const page = pageInfo(pathname)
   const [moreOpen, setMoreOpen] = useState(false)
   const closeMore = useCallback(() => setMoreOpen(false), [])
 
@@ -26,7 +33,19 @@ export default function AppLayout() {
     <div className="min-h-dvh">
       <header className="pt-safe sticky top-0 z-30 border-b border-neutral-200 bg-white/95 backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/95">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
-          <h1 className="text-lg font-semibold">{pageTitle(pathname)}</h1>
+          <div className="flex min-w-0 items-center gap-1">
+            {page.back && (
+              <button
+                type="button"
+                onClick={() => (window.history.length > 1 ? navigate(-1) : navigate(page.back))}
+                aria-label="Voltar"
+                className="-ml-2 flex size-11 items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              >
+                <ChevronLeft size={24} aria-hidden />
+              </button>
+            )}
+            <h1 className="truncate text-lg font-semibold">{page.title}</h1>
+          </div>
           <button
             type="button"
             onClick={() => setMoreOpen(true)}
