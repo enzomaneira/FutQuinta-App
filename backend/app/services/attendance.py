@@ -165,7 +165,9 @@ def substitute(
     return attendance
 
 
-def set_presence(db: Session, game_id: int, player_id: int, present: bool) -> Attendance:
+def set_presence(
+    db: Session, game_id: int, player_id: int, present: bool, *, now: datetime | None = None
+) -> Attendance:
     """Depois do jogo: corrige compareceu/faltou (o fechamento marca todos
     os confirmados como presentes)."""
     game = get_game(db, game_id, lock=True)
@@ -177,7 +179,7 @@ def set_presence(db: Session, game_id: int, player_id: int, present: bool) -> At
     attendance.status = S.PRESENT if present else S.ABSENT
     if attendance.slot_type == SlotType.DROP_IN:
         if present:
-            billing.ensure_drop_in_charge(db, player_id, game)
+            billing.ensure_drop_in_charge(db, player_id, game, now=now)
         else:
             billing.waive_drop_in_charge(db, player_id, game)
     db.commit()
@@ -228,7 +230,7 @@ def _confirm(db, game, player_id, now, source) -> Attendance:
     attendance.source = source
     if attendance.slot_type == SlotType.DROP_IN:
         db.flush()
-        billing.ensure_drop_in_charge(db, player_id, game)
+        billing.ensure_drop_in_charge(db, player_id, game, now=now)
     return attendance
 
 

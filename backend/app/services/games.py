@@ -201,7 +201,7 @@ def close_list(db: Session, game_id: int) -> Game:
     return game
 
 
-def reopen_list(db: Session, game_id: int) -> Game:
+def reopen_list(db: Session, game_id: int, *, now: datetime | None = None) -> Game:
     """Reabre uma lista fechada ou um jogo cancelado por engano."""
     game = get_game(db, game_id, lock=True)
     if game.status not in (GameStatus.CLOSED, GameStatus.CANCELLED):
@@ -209,7 +209,7 @@ def reopen_list(db: Session, game_id: int) -> Game:
     if game.status == GameStatus.CANCELLED:
         # Avulsos confirmados voltam a ser cobrados
         for attendance in _confirmed_drop_ins(db, game.id):
-            billing.ensure_drop_in_charge(db, attendance.player_id, game)
+            billing.ensure_drop_in_charge(db, attendance.player_id, game, now=now)
     game.status = GameStatus.OPEN
     db.commit()
     return game

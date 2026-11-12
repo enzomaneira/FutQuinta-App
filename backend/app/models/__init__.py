@@ -4,6 +4,7 @@ from app.models.attendance import Attendance
 from app.models.charge import Charge
 from app.models.expense import Expense
 from app.models.game import Game
+from app.models.job_run import JobRun
 from app.models.payment import Payment
 from app.models.player import Player
 from app.models.setting import Setting
@@ -14,6 +15,7 @@ __all__ = [
     "Charge",
     "Expense",
     "Game",
+    "JobRun",
     "Payment",
     "Player",
     "Setting",

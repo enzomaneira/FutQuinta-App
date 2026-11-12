@@ -29,7 +29,7 @@ export default function PlayersPage() {
   const [formOpen, setFormOpen] = useState(false)
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-16">
       <Segmented label="Filtrar jogadores" options={TABS} value={tab} onChange={setTab} />
       {tab === 'monthly' && <MonthlySlots />}
       <PlayerList

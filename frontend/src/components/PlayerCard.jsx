@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import { Link } from 'react-router'
 
-import { POSITION_LABEL, TYPE_LABEL, formatPhone } from '../lib/format.js'
+import { PAYMENT_STATUS, POSITION_LABEL, TYPE_LABEL, formatPhone } from '../lib/format.js'
 import { Badge } from './ui.jsx'
 
 // Cartão de jogador na lista; toque abre o perfil
@@ -19,6 +19,11 @@ export default function PlayerCard({ player, showType = false }) {
           </Badge>
           {showType && <Badge>{TYPE_LABEL[player.type]}</Badge>}
           {!player.active && <Badge tone="amber">Inativo</Badge>}
+          {player.payment_status && player.payment_status !== 'ok' && (
+            <Badge tone={PAYMENT_STATUS[player.payment_status].tone}>
+              {PAYMENT_STATUS[player.payment_status].label}
+            </Badge>
+          )}
           {player.phone && (
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
               {formatPhone(player.phone)}

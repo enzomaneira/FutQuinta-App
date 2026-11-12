@@ -6,7 +6,13 @@ import Placeholder from '../components/Placeholder.jsx'
 import PlayerFormSheet from '../components/PlayerFormSheet.jsx'
 import { Badge, Button, Card, EmptyState, LoadingList } from '../components/ui.jsx'
 import { useDeletePlayer, usePlayer, useUpdatePlayer } from '../features/players.js'
-import { POSITION_LABEL, TYPE_LABEL, formatPhone, whatsappUrl } from '../lib/format.js'
+import {
+  PAYMENT_STATUS,
+  POSITION_LABEL,
+  TYPE_LABEL,
+  formatPhone,
+  whatsappUrl,
+} from '../lib/format.js'
 
 const linkButton =
   'inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-neutral-200 px-4 text-base font-semibold active:bg-neutral-300 dark:bg-neutral-800 dark:active:bg-neutral-700'
@@ -49,6 +55,11 @@ export default function PlayerPage() {
               <Badge tone={player.active ? 'green' : 'amber'}>
                 {player.active ? 'Ativo' : 'Inativo'}
               </Badge>
+              {player.payment_status && (
+                <Badge tone={PAYMENT_STATUS[player.payment_status].tone}>
+                  {PAYMENT_STATUS[player.payment_status].label}
+                </Badge>
+              )}
             </div>
           </div>
           <Button variant="ghost" onClick={() => setEditing(true)} aria-label="Editar jogador" className="-mr-2 px-3">

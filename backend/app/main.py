@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.types import Scope
 
-from app.api.routes import auth, games, health, players
+from app.api.routes import auth, finance, games, health, players
 from app.api.routes import settings as settings_routes
 from app.core.config import get_settings
 from app.core.logging import setup_logging
@@ -60,6 +60,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix="/api")
     app.include_router(players.router, prefix="/api")
     app.include_router(games.router, prefix="/api")
+    app.include_router(finance.router, prefix="/api")
     app.include_router(settings_routes.router, prefix="/api")
 
     if settings.frontend_dist.is_dir():

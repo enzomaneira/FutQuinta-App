@@ -65,6 +65,38 @@ export function formatMoney(cents) {
   return (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
+// "1.200,50" / "59" / "R$ 25,00" -> centavos (NaN se inválido)
+export function parseMoney(text) {
+  const normalized = String(text)
+    .replace(/R\$|\s/g, '')
+    .replace(/\.(?=\d{3}(\D|$))/g, '')
+    .replace(',', '.')
+  if (normalized === '') return Number.NaN
+  return Math.round(Number(normalized) * 100)
+}
+
+export const CHARGE_STATUS = {
+  pending: { label: 'Pendente', tone: 'amber' },
+  overdue: { label: 'Atrasado', tone: 'red' },
+  paid: { label: 'Pago', tone: 'green' },
+  waived: { label: 'Isento', tone: 'neutral' },
+}
+
+// Situação geral do jogador (lista de jogadores e perfil)
+export const PAYMENT_STATUS = {
+  ok: { label: 'Em dia', tone: 'green' },
+  pending: { label: 'Pagamento pendente', tone: 'amber' },
+  overdue: { label: 'Pagamento atrasado', tone: 'red' },
+}
+
+export const EXPENSE_CATEGORY = { court: 'Quadra', bibs: 'Coletes', ball: 'Bola', other: 'Outros' }
+
+// "2026-11-19" -> "19/11"
+export function formatShortDate(isoDate) {
+  const [, m, d] = isoDate.split('-')
+  return `${d}/${m}`
+}
+
 export function whatsappUrl(e164) {
   return `https://wa.me/${e164.replace(/\D/g, '')}`
 }

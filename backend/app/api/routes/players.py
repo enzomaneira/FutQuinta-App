@@ -15,6 +15,7 @@ from app.schemas.players import (
     PlayerUpdate,
     SlotUsageOut,
 )
+from app.services import billing
 from app.services import players as service
 
 router = APIRouter(
@@ -31,9 +32,12 @@ def list_players(
     q: str | None = None,
 ):
     active = {"active": True, "inactive": False, "all": None}[status]
-    return service.list_players(
-        db, type=type, position=position, active=active, search=q
-    )
+    players = service.list_players(db, type=type, position=position, active=active, search=q)
+    payment = billing.payment_status_by_player(db)
+    return [
+        PlayerOut.model_validate(p).model_copy(update={"payment_status": payment.get(p.id, "ok")})
+        for p in players
+    ]
 
 
 @router.get("/monthly-slots", response_model=MonthlySlotsOut)
@@ -54,7 +58,8 @@ def create_player(body: PlayerCreate, db: DbSession):
 def get_player(player_id: int, db: DbSession):
     player = service.get_player(db, player_id)
     return PlayerDetail(
-        **PlayerOut.model_validate(player).model_dump(),
+        **PlayerOut.model_validate(player).model_dump(exclude={"payment_status"}),
+        payment_status=billing.payment_status_by_player(db).get(player_id, "ok"),
         can_delete=not service.has_history(db, player_id),
     )
 

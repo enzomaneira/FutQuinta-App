@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -32,6 +33,8 @@ class PlayerOut(BaseModel):
     position: Position
     active: bool
     created_at: datetime
+    # "ok" (em dia), "pending" (em aberto no prazo) ou "overdue" (atrasado)
+    payment_status: Literal["ok", "pending", "overdue"] = "ok"
 
 
 class PlayerDetail(PlayerOut):

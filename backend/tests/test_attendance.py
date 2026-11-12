@@ -247,7 +247,7 @@ def test_falta_de_avulso_isenta_cobranca(db, full_game, make_player):
     att.set_presence(db, game.id, avulso.id, False)
     assert status_of(db, game, avulso) == S.ABSENT
     assert charge_of(db, game, avulso).status == ChargeStatus.WAIVED
-    att.set_presence(db, game.id, avulso.id, True)
+    att.set_presence(db, game.id, avulso.id, True, now=sp(19, 23, 40))
     assert charge_of(db, game, avulso).status == ChargeStatus.PENDING
 
 
@@ -266,7 +266,7 @@ def test_cancelar_jogo_isenta_avulsos_e_reabrir_cobra_de_novo(db, full_game, mak
 
     assert games.cancel_game(db, game.id).status == GameStatus.CANCELLED
     assert charge_of(db, game, avulso).status == ChargeStatus.WAIVED
-    assert games.reopen_list(db, game.id).status == GameStatus.OPEN
+    assert games.reopen_list(db, game.id, now=TUE).status == GameStatus.OPEN
     assert charge_of(db, game, avulso).status == ChargeStatus.PENDING
 
 

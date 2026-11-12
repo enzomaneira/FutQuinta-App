@@ -8,7 +8,7 @@ import { Card, Fab } from '../components/ui.jsx'
 export default function DropInsPage() {
   const [formOpen, setFormOpen] = useState(false)
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-16">
       <Card className="text-sm text-neutral-600 dark:text-neutral-300">
         A fila de cada jogo segue a ordem em que o avulso se candidata. Ela aparece na
         tela <strong>Jogo</strong>, junto com o botão de chamar.
