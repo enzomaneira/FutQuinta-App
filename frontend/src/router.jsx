@@ -26,6 +26,7 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: 'calendario', element: <CalendarPage /> },
       { path: 'jogo', element: <GamePage /> },
+      { path: 'jogos/:id', element: <GamePage /> },
       { path: 'jogadores', element: <PlayersPage /> },
       { path: 'jogadores/:id', element: <PlayerPage /> },
       { path: 'financeiro', element: <FinancePage /> },

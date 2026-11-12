@@ -12,7 +12,10 @@ const EXTRA_TITLES = {
 }
 
 // Telas de detalhe: título próprio e botão de voltar
-const DETAIL_PAGES = [{ prefix: '/jogadores/', title: 'Jogador', back: '/jogadores' }]
+const DETAIL_PAGES = [
+  { prefix: '/jogadores/', title: 'Jogador', back: '/jogadores' },
+  { prefix: '/jogos/', title: 'Jogo', back: '/calendario' },
+]
 
 function pageInfo(pathname) {
   const detail = DETAIL_PAGES.find((d) => pathname.startsWith(d.prefix))

@@ -10,6 +10,7 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.models.setting import Setting
+from app.services.errors import DomainError
 
 DEFAULTS: dict[str, Any] = {
     # Local
@@ -56,3 +57,28 @@ def get_all_settings(db: Session) -> dict[str, Any]:
     for row in db.query(Setting).all():
         values[row.key] = row.value
     return values
+
+
+def update_settings(db: Session, changes: dict[str, Any]) -> dict[str, Any]:
+    """Grava as configurações alteradas (chaves já validadas pelo schema).
+
+    Vale para os próximos jogos: jogos já criados mantêm horários e vagas.
+    """
+    unknown = set(changes) - set(DEFAULTS)
+    if unknown:
+        raise KeyError(f"Configurações desconhecidas: {sorted(unknown)}")
+    merged = {**get_all_settings(db), **changes}
+    if merged["game_start_time"] == merged["game_end_time"]:
+        raise DomainError("O horário de fim precisa ser diferente do início")
+    if merged["confirmation_deadline_time"] > merged["late_cancellation_time"]:
+        raise DomainError(
+            "O prazo de confirmação precisa ser antes do horário de desistência em cima da hora"
+        )
+    for key, value in changes.items():
+        row = db.get(Setting, key)
+        if row is None:
+            db.add(Setting(key=key, value=value))
+        else:
+            row.value = value
+    db.commit()
+    return get_all_settings(db)
