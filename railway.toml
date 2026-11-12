@@ -1,0 +1,14 @@
+# Serviço "app" no Railway (o serviço "postgres" é criado pelo painel).
+# Variáveis no painel: DATABASE_URL=${{postgres.DATABASE_URL}}, JWT_SECRET, TZ.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
+# Uma réplica só: o agendador roda dentro do processo da API
+numReplicas = 1

@@ -1,0 +1,9 @@
+[project]
+name = "futquinta-backend"
+version = "0.1.0"
+description = "API do App Futebol (FutQuinta)"
+requires-python = ">=3.12,<3.13"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

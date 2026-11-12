@@ -1,0 +1,35 @@
+# Ambiente de desenvolvimento local.
+#   docker compose up -d db       -> só o Postgres (para rodar API/front fora do Docker)
+#   docker compose up --build     -> Postgres + app completo em http://localhost:8000
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: futquinta
+      POSTGRES_PASSWORD: futquinta
+      POSTGRES_DB: futquinta
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/create-test-db.sql:/docker-entrypoint-initdb.d/01-create-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U futquinta -d futquinta"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    env_file: .env
+    environment:
+      # Dentro do Docker o banco é o serviço "db", não localhost
+      DATABASE_URL: postgresql+psycopg://futquinta:futquinta@db:5432/futquinta
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

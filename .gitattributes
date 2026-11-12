@@ -1,0 +1,4 @@
+# Fim de linha LF no repositório e na cópia de trabalho (Docker/Railway rodam em Linux)
+* text=auto eol=lf
+*.png binary
+*.ico binary
