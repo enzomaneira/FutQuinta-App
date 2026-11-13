@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-import { useCreatePlayer, useUpdatePlayer } from '../features/players.js'
+import { useCreatePlayer, usePlayers, useUpdatePlayer } from '../features/players.js'
 import { formatPhone } from '../lib/format.js'
 import Sheet from './Sheet.jsx'
-import { Button, Segmented, TextField } from './ui.jsx'
+import { Button, Segmented, TextField, inputClass } from './ui.jsx'
 
 const POSITION_OPTIONS = [
   { value: 'field', label: 'Linha' },
@@ -35,6 +35,8 @@ function PlayerForm({ player, defaultType, onDone }) {
   const [phone, setPhone] = useState(player ? formatPhone(player.phone) : '')
   const [position, setPosition] = useState(player?.position ?? 'field')
   const [type, setType] = useState(player?.type ?? defaultType)
+  // '' = ninguém; guardado como texto porque vem de um <select>
+  const [referredBy, setReferredBy] = useState(player?.referred_by_id ? String(player.referred_by_id) : '')
 
   const create = useCreatePlayer()
   const update = useUpdatePlayer(player?.id)
@@ -43,6 +45,8 @@ function PlayerForm({ player, defaultType, onDone }) {
   function handleSubmit(e) {
     e.preventDefault()
     const body = { name, phone: phone.trim() || null, position, type }
+    // "Trazido por" só existe para avulso (mensalista não tem)
+    if (type === 'drop_in') body.referred_by_id = referredBy ? Number(referredBy) : null
     mutation.mutate(body, { onSuccess: onDone })
   }
 
@@ -74,6 +78,9 @@ function PlayerForm({ player, defaultType, onDone }) {
         <span className="mb-1 block text-sm font-medium">Tipo</span>
         <Segmented label="Tipo" options={TYPE_OPTIONS} value={type} onChange={setType} />
       </div>
+      {type === 'drop_in' && (
+        <ReferrerSelect value={referredBy} onChange={setReferredBy} current={player} />
+      )}
 
       {/* Na criação o erro aparece aqui; na edição o hook também mostra um aviso */}
       {mutation.isError && (
@@ -86,5 +93,29 @@ function PlayerForm({ player, defaultType, onDone }) {
         {mutation.isPending ? 'Salvando…' : player ? 'Salvar' : 'Cadastrar'}
       </Button>
     </form>
+  )
+}
+
+/** Lista de mensalistas ativos para "Trazido por". Se o mensalista atual foi
+ * desativado depois, ele continua aparecendo para não perder o vínculo. */
+function ReferrerSelect({ value, onChange, current }) {
+  const { data: monthly = [] } = usePlayers({ type: 'monthly' })
+  const options = monthly.map((p) => ({ id: String(p.id), name: p.name }))
+  if (current?.referred_by_id && !options.some((o) => o.id === String(current.referred_by_id))) {
+    options.push({ id: String(current.referred_by_id), name: `${current.referred_by_name} (inativo)` })
+  }
+  return (
+    <label className="block text-sm font-medium">
+      Trazido por (mensalista)
+      <select value={value} onChange={(e) => onChange(e.target.value)} className={inputClass}>
+        <option value="">Ninguém / não sei</option>
+        {options.map((o) => (
+          <option key={o.id} value={o.id}>
+            {o.name}
+          </option>
+        ))}
+      </select>
+      <span className="mt-1 block text-xs text-neutral-600 dark:text-neutral-400">Opcional.</span>
+    </label>
   )
 }

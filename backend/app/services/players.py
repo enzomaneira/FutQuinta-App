@@ -85,6 +85,7 @@ def create_player(
     type: PlayerType,
     position: Position,
     phone: str | None = None,
+    referred_by_id: int | None = None,
 ) -> Player:
     player = Player(
         name=_clean_name(name),
@@ -92,9 +93,11 @@ def create_player(
         type=type,
         position=position,
         active=True,
+        referred_by_id=referred_by_id,
     )
     _check_phone_unique(db, player.phone, exclude_id=None)
     _check_monthly_slot(db, player)
+    _check_referrer(db, player, changed=referred_by_id is not None)
     db.add(player)
     db.commit()
     db.refresh(player)
@@ -102,11 +105,13 @@ def create_player(
 
 
 def update_player(db: Session, player_id: int, **changes) -> Player:
-    """Atualiza só os campos informados (name, phone, type, position, active).
+    """Atualiza só os campos informados (name, phone, type, position, active,
+    referred_by_id).
 
-    `phone=None` apaga o telefone. Em erro de validação nada é alterado.
+    `phone=None` apaga o telefone e `referred_by_id=None` tira o mensalista
+    que trouxe. Em erro de validação nada é alterado.
     """
-    unknown = set(changes) - {"name", "phone", "type", "position", "active"}
+    unknown = set(changes) - {"name", "phone", "type", "position", "active", "referred_by_id"}
     if unknown:
         raise TypeError(f"Campos desconhecidos: {sorted(unknown)}")
 
@@ -120,11 +125,12 @@ def update_player(db: Session, player_id: int, **changes) -> Player:
             if "phone" in changes:
                 player.phone = normalize_phone(changes["phone"])
                 _check_phone_unique(db, player.phone, exclude_id=player.id)
-            for field in ("type", "position", "active"):
+            for field in ("type", "position", "active", "referred_by_id"):
                 if field in changes:
                     setattr(player, field, changes[field])
             # Valida a vaga com o estado final (ex.: avulso virando mensalista)
             _check_monthly_slot(db, player)
+            _check_referrer(db, player, changed="referred_by_id" in changes)
     except DomainError:
         db.rollback()  # descarta a alteração parcial em memória
         raise
@@ -199,3 +205,35 @@ def _check_monthly_slot(db: Session, player: Player) -> None:
             f"Já existem {others} mensalistas {label} ativos (limite {limit}). "
             "Desative um deles ou cadastre como avulso."
         )
+
+
+def _check_referrer(db: Session, player: Player, *, changed: bool) -> None:
+    """"Trazido por" vale só para avulso e precisa ser um mensalista.
+
+    Se o avulso virar mensalista, o vínculo é apagado. Um mensalista que for
+    desativado depois continua aparecendo como quem trouxe (histórico), mas
+    para escolher agora ele precisa estar ativo.
+    """
+    if player.type == PlayerType.MONTHLY:
+        player.referred_by_id = None
+        return
+    if player.referred_by_id is None:
+        return
+    if player.id is not None and player.referred_by_id == player.id:
+        raise DomainError("O jogador não pode ter trazido a si mesmo")
+    referrer = db.get(Player, player.referred_by_id)
+    if referrer is None:
+        raise NotFoundError("Mensalista não encontrado")
+    if referrer.type != PlayerType.MONTHLY:
+        raise DomainError("Quem trouxe o avulso precisa ser um mensalista")
+    if changed and not referrer.active:
+        raise DomainError(f"{referrer.name} está inativo")
+
+
+def referrer_names(db: Session, players: list[Player]) -> dict[int, str]:
+    """Nome do mensalista que trouxe cada avulso (id do avulso -> nome)."""
+    ids = {p.referred_by_id for p in players if p.referred_by_id}
+    if not ids:
+        return {}
+    names = dict(db.execute(select(Player.id, Player.name).where(Player.id.in_(ids))).all())
+    return {p.id: names[p.referred_by_id] for p in players if p.referred_by_id in names}

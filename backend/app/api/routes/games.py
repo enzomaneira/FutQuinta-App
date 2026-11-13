@@ -29,6 +29,7 @@ from app.schemas.games import (
 from app.services import attendance as att
 from app.services import games as games_service
 from app.services import queue as queue_service
+from app.services import players as players_service
 from app.services.attendance import IN_SLOT, POSITION_LABEL
 from app.services.schedule import late_cancellation_at, local_date_of
 from app.services.settings import get_setting
@@ -177,8 +178,10 @@ def game_detail(db: Session, game: Game) -> GameDetail:
     lineup: dict[Position, list[AttendanceOut]] = {p: [] for p in Position}
     queue: dict[Position, list[AttendanceOut]] = {p: [] for p in Position}
     out: list[AttendanceOut] = []
+    referrers = players_service.referrer_names(db, [player for _, player in rows])
     for attendance, player in rows:
         item = _attendance_out(attendance, player)
+        item.referred_by_name = referrers.get(player.id)
         if attendance.status in IN_SLOT:
             lineup[player.position].append(item)
         elif attendance.status == S.QUEUED:

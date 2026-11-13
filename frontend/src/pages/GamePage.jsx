@@ -268,6 +268,11 @@ function Row({ attendance, onSelect, children, prefix }) {
             )}
             {attendance.slot_type === 'drop_in' && attendance.status !== 'queued' && <Badge>Avulso</Badge>}
           </span>
+          {attendance.referred_by_name && (
+            <span className="mt-0.5 block truncate text-xs text-neutral-600 dark:text-neutral-400">
+              Trazido por {attendance.referred_by_name}
+            </span>
+          )}
         </span>
       </button>
       {children}

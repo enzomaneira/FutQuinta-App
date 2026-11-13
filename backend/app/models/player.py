@@ -1,4 +1,4 @@
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.db import Base
@@ -21,3 +21,7 @@ class Player(TimestampMixin, Base):
     type: Mapped[PlayerType] = mapped_column(db_enum(PlayerType))
     position: Mapped[Position] = mapped_column(db_enum(Position))
     active: Mapped[bool] = mapped_column(default=True)
+    # Só para avulsos: o mensalista que trouxe o jogador
+    referred_by_id: Mapped[int | None] = mapped_column(
+        ForeignKey("players.id", ondelete="SET NULL"), index=True
+    )

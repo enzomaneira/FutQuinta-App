@@ -11,6 +11,7 @@ class PlayerCreate(BaseModel):
     phone: str | None = Field(default=None, max_length=30)
     type: PlayerType
     position: Position
+    referred_by_id: int | None = None  # mensalista que trouxe (só avulso)
 
 
 class PlayerUpdate(BaseModel):
@@ -21,6 +22,7 @@ class PlayerUpdate(BaseModel):
     type: PlayerType | None = None
     position: Position | None = None
     active: bool | None = None
+    referred_by_id: int | None = None  # null tira o vínculo
 
 
 class PlayerOut(BaseModel):
@@ -35,6 +37,8 @@ class PlayerOut(BaseModel):
     created_at: datetime
     # "ok" (em dia), "pending" (em aberto no prazo) ou "overdue" (atrasado)
     payment_status: Literal["ok", "pending", "overdue"] = "ok"
+    referred_by_id: int | None = None
+    referred_by_name: str | None = None  # mensalista que trouxe o avulso
 
 
 class PlayerDetail(PlayerOut):

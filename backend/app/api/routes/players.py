@@ -34,8 +34,14 @@ def list_players(
     active = {"active": True, "inactive": False, "all": None}[status]
     players = service.list_players(db, type=type, position=position, active=active, search=q)
     payment = billing.payment_status_by_player(db)
+    referrers = service.referrer_names(db, players)
     return [
-        PlayerOut.model_validate(p).model_copy(update={"payment_status": payment.get(p.id, "ok")})
+        PlayerOut.model_validate(p).model_copy(
+            update={
+                "payment_status": payment.get(p.id, "ok"),
+                "referred_by_name": referrers.get(p.id),
+            }
+        )
         for p in players
     ]
 
@@ -58,8 +64,11 @@ def create_player(body: PlayerCreate, db: DbSession):
 def get_player(player_id: int, db: DbSession):
     player = service.get_player(db, player_id)
     return PlayerDetail(
-        **PlayerOut.model_validate(player).model_dump(exclude={"payment_status"}),
+        **PlayerOut.model_validate(player).model_dump(
+            exclude={"payment_status", "referred_by_name"}
+        ),
         payment_status=billing.payment_status_by_player(db).get(player_id, "ok"),
+        referred_by_name=service.referrer_names(db, [player]).get(player_id),
         can_delete=not service.has_history(db, player_id),
     )
 
@@ -67,8 +76,10 @@ def get_player(player_id: int, db: DbSession):
 @router.patch("/{player_id}", response_model=PlayerOut)
 def update_player(player_id: int, body: PlayerUpdate, db: DbSession):
     changes = body.model_dump(exclude_unset=True)
-    # `phone: null` apaga o telefone; nos demais campos, null é ignorado
-    changes = {k: v for k, v in changes.items() if v is not None or k == "phone"}
+    # `phone: null` apaga o telefone e `referred_by_id: null` tira quem
+    # trouxe; nos demais campos, null é ignorado
+    nullable = {"phone", "referred_by_id"}
+    changes = {k: v for k, v in changes.items() if v is not None or k in nullable}
     return service.update_player(db, player_id, **changes)
 
 

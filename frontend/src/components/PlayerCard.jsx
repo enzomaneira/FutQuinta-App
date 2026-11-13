@@ -29,6 +29,11 @@ export default function PlayerCard({ player, showType = false }) {
               {formatPhone(player.phone)}
             </span>
           )}
+          {player.referred_by_name && (
+            <span className="text-xs text-neutral-600 dark:text-neutral-400">
+              · trazido por {player.referred_by_name}
+            </span>
+          )}
         </div>
       </div>
       <ChevronRight size={20} className="shrink-0 text-neutral-400" aria-hidden />

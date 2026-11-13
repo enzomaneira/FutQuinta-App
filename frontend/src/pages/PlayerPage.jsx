@@ -1,6 +1,6 @@
 import { MessageCircle, Pencil, Phone } from 'lucide-react'
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 
 import PlayerProfileSections from '../components/PlayerProfileSections.jsx'
 import PlayerFormSheet from '../components/PlayerFormSheet.jsx'
@@ -85,6 +85,14 @@ export default function PlayerPage() {
           </>
         ) : (
           <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">Sem telefone cadastrado.</p>
+        )}
+        {player.referred_by_name && (
+          <p className="mt-3 text-sm">
+            Trazido por{' '}
+            <Link to={`/jogadores/${player.referred_by_id}`} className="font-semibold underline">
+              {player.referred_by_name}
+            </Link>
+          </p>
         )}
       </Card>
 

@@ -22,6 +22,7 @@ class AttendanceOut(BaseModel):
     responded_at: datetime | None
     queued_at: datetime | None
     queue_position: int | None = None  # 1 = próximo a ser chamado
+    referred_by_name: str | None = None  # mensalista que trouxe o avulso
 
 
 class SlotOut(BaseModel):
