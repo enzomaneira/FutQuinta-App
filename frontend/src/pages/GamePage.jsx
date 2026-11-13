@@ -32,7 +32,7 @@ function CurrentGame() {
     return (
       <Card className="space-y-3 text-center">
         <p className="font-semibold">Nenhum jogo agendado</p>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
           A lista abre sozinha no dia e horário definidos em Configurações. Para criar um jogo
           agora, toque numa data no Calendário.
         </p>
@@ -196,7 +196,7 @@ function Header({ game, onBib }) {
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="text-lg font-bold capitalize">{formatGameDate(game.local_date)}</h2>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
             {formatTime(game.start_time)} às {formatTime(game.end_time)}
           </p>
         </div>
@@ -206,8 +206,8 @@ function Header({ game, onBib }) {
       <div className="flex items-end gap-4">
         <p>
           <span className="text-4xl font-bold tabular-nums">{game.occupied}</span>
-          <span className="text-xl text-neutral-500">/{game.capacity}</span>
-          <span className="ml-2 text-sm text-neutral-500 dark:text-neutral-400">na lista</span>
+          <span className="text-xl text-neutral-600 dark:text-neutral-400">/{game.capacity}</span>
+          <span className="ml-2 text-sm text-neutral-600 dark:text-neutral-400">na lista</span>
         </p>
         <p className="pb-1 text-sm text-neutral-600 dark:text-neutral-300">
           Goleiros {gk.confirmed + gk.pending}/{gk.capacity} · Linha {field.confirmed + field.pending}/
@@ -216,7 +216,7 @@ function Header({ game, onBib }) {
       </div>
 
       {game.editable && (
-        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+        <p className="text-xs text-neutral-600 dark:text-neutral-400">
           {game.deadline_passed
             ? 'Prazo de confirmação dos mensalistas encerrado.'
             : `Mensalistas confirmam até ${formatDeadline(game.confirmation_deadline)}.`}{' '}
@@ -231,7 +231,7 @@ function Header({ game, onBib }) {
             Coletes: <strong>{game.bib_player?.name ?? 'não definido'}</strong>
           </span>
         </p>
-        <Button variant="secondary" className="min-h-10 px-3 text-sm" onClick={onBib}>
+        <Button variant="secondary" className="px-3 text-sm" onClick={onBib}>
           {game.bib_player ? 'Trocar' : 'Definir'}
         </Button>
       </div>
@@ -275,7 +275,7 @@ function Row({ attendance, onSelect, children, prefix }) {
   )
 }
 
-const small = 'min-h-10 shrink-0 px-3 text-sm'
+const small = 'shrink-0 px-3 text-sm'
 
 function LineupSection({ title, singular, game, position, busy, ops, onSelect }) {
   const items = game.lineup[position]
@@ -318,7 +318,7 @@ function LineupSection({ title, singular, game, position, busy, ops, onSelect })
               key={`free-${i}`}
               className="flex min-h-14 items-center justify-between gap-2 rounded-2xl border border-dashed border-neutral-300 py-1.5 pr-2 pl-3 dark:border-neutral-700"
             >
-              <span className="text-sm text-neutral-500">Vaga livre de {singular}</span>
+              <span className="text-sm text-neutral-600 dark:text-neutral-400">Vaga livre de {singular}</span>
               {nextInQueue && i === 0 && (
                 <Button className={small} disabled={busy} onClick={() => ops.callNext(position)}>
                   Chamar {nextInQueue.name.split(' ')[0]}
@@ -419,7 +419,7 @@ function ManageSection({ game, run, busy, onAdd }) {
         </Button>
       )}
       {game.editable && (
-        <Button variant="ghost" className="w-full text-red-600 dark:text-red-400" disabled={busy} onClick={cancelGame}>
+        <Button variant="ghost" className="w-full text-red-700 dark:text-red-400" disabled={busy} onClick={cancelGame}>
           Cancelar jogo
         </Button>
       )}
@@ -429,7 +429,7 @@ function ManageSection({ game, run, busy, onAdd }) {
 
 function SectionTitle({ children }) {
   return (
-    <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-500 dark:text-neutral-400">{children}</h3>
+    <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-600 dark:text-neutral-400">{children}</h3>
   )
 }
 

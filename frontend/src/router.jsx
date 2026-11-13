@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 
 import AppLayout from './components/AppLayout.jsx'
+import ErrorPage from './components/ErrorPage.jsx'
 import RequireAuth from './components/RequireAuth.jsx'
 import CalendarPage from './pages/CalendarPage.jsx'
 import DropInsPage from './pages/DropInsPage.jsx'
@@ -15,13 +16,14 @@ import PlayersPage from './pages/PlayersPage.jsx'
 import SettingsPage from './pages/SettingsPage.jsx'
 
 export const router = createBrowserRouter([
-  { path: '/login', element: <LoginPage /> },
+  { path: '/login', element: <LoginPage />, errorElement: <ErrorPage /> },
   {
     element: (
       <RequireAuth>
         <AppLayout />
       </RequireAuth>
     ),
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       { path: 'calendario', element: <CalendarPage /> },

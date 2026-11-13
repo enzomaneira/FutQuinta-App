@@ -52,7 +52,7 @@ function Group({ title, players, showType }) {
   if (players.length === 0) return null
   return (
     <section>
-      <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+      <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-600 dark:text-neutral-400">
         {title} ({players.length})
       </h3>
       <ul className="space-y-2">

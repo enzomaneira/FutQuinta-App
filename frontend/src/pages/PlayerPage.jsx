@@ -69,7 +69,7 @@ export default function PlayerPage() {
 
         {player.phone ? (
           <>
-            <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
               {formatPhone(player.phone)}
             </p>
             <div className="mt-2 flex gap-2">
@@ -84,7 +84,7 @@ export default function PlayerPage() {
             </div>
           </>
         ) : (
-          <p className="mt-4 text-sm text-neutral-500">Sem telefone cadastrado.</p>
+          <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">Sem telefone cadastrado.</p>
         )}
       </Card>
 
@@ -95,7 +95,7 @@ export default function PlayerPage() {
           {player.active ? 'Desativar jogador' : 'Reativar jogador'}
         </Button>
         {player.can_delete && (
-          <Button variant="ghost" className="w-full text-red-600 dark:text-red-400" onClick={handleDelete} disabled={remove.isPending}>
+          <Button variant="ghost" className="w-full text-red-700 dark:text-red-400" onClick={handleDelete} disabled={remove.isPending}>
             Excluir cadastro
           </Button>
         )}

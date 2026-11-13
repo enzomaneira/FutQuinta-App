@@ -34,7 +34,7 @@ function PickerBody({ onPick, exclude, filter, hint }) {
 
   return (
     <div className="space-y-3">
-      {hint && <p className="text-sm text-neutral-500 dark:text-neutral-400">{hint}</p>}
+      {hint && <p className="text-sm text-neutral-600 dark:text-neutral-400">{hint}</p>}
       <label className="relative block">
         <span className="sr-only">Buscar jogador</span>
         <Search

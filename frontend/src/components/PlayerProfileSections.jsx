@@ -43,9 +43,9 @@ export default function PlayerProfileSections({ playerId }) {
         <ul className="grid grid-cols-2 gap-2">
           {tiles.map(([label, value, hint]) => (
             <li key={label} className="rounded-2xl bg-white p-3 shadow-sm dark:bg-neutral-900">
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">{label}</p>
+              <p className="text-xs text-neutral-600 dark:text-neutral-400">{label}</p>
               <p className="text-2xl font-bold tabular-nums">{value}</p>
-              {hint && <p className="text-xs text-neutral-500 dark:text-neutral-400">{hint}</p>}
+              {hint && <p className="text-xs text-neutral-600 dark:text-neutral-400">{hint}</p>}
             </li>
           ))}
         </ul>
@@ -82,12 +82,12 @@ export default function PlayerProfileSections({ playerId }) {
           )}
           {data.payments.length > 0 && (
             <div className="border-t border-neutral-200 pt-2 dark:border-neutral-800">
-              <p className="mb-1 text-xs font-semibold text-neutral-500">Histórico de pagamentos</p>
+              <p className="mb-1 text-xs font-semibold text-neutral-600 dark:text-neutral-400">Histórico de pagamentos</p>
               <ul className="space-y-1">
                 {data.payments.map((p) => (
                   <li key={`${p.charge_id}-${p.paid_at}`} className="flex justify-between gap-2 text-sm">
                     <span>{chargeLabel(p.charge_type, p.reference, null)}</span>
-                    <span className="text-neutral-500 tabular-nums">
+                    <span className="text-neutral-600 dark:text-neutral-400 tabular-nums">
                       {formatMoney(p.amount_cents)} · {p.method === 'pix' ? 'Pix' : 'dinheiro'} ·{' '}
                       {new Date(p.paid_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
                     </span>
@@ -129,5 +129,5 @@ export default function PlayerProfileSections({ playerId }) {
 }
 
 function SectionTitle({ children }) {
-  return <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-500 dark:text-neutral-400">{children}</h3>
+  return <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-600 dark:text-neutral-400">{children}</h3>
 }

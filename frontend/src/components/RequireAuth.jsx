@@ -13,7 +13,7 @@ export default function RequireAuth({ children }) {
   }
   if (me.isPending) {
     return (
-      <div className="flex min-h-dvh items-center justify-center text-neutral-500">
+      <div className="flex min-h-dvh items-center justify-center text-neutral-600 dark:text-neutral-400">
         Carregando…
       </div>
     )

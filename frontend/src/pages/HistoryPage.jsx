@@ -51,7 +51,7 @@ function HistoryList() {
               >
                 <span>
                   <span className="block font-semibold capitalize">{formatGameDate(g.local_date)}</span>
-                  <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                  <span className="text-sm text-neutral-600 dark:text-neutral-400">
                     {formatTime(g.start_time)} · {g.occupied} jogador{g.occupied === 1 ? '' : 'es'}
                   </span>
                 </span>
@@ -83,7 +83,7 @@ function HistoryDetail({ id }) {
         <div className="flex items-start justify-between gap-2">
           <div>
             <h2 className="text-lg font-bold capitalize">{formatGameDate(game.local_date)}</h2>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
               {formatTime(game.start_time)} às {formatTime(game.end_time)}
             </p>
           </div>
@@ -114,9 +114,9 @@ function HistoryDetail({ id }) {
         <SectionTitle>Valores recebidos (avulsos)</SectionTitle>
         <Card className="space-y-2">
           {!values ? (
-            <p className="text-sm text-neutral-500">Carregando…</p>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">Carregando…</p>
           ) : values.charges.length === 0 ? (
-            <p className="text-sm text-neutral-500">Nenhum avulso neste jogo.</p>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">Nenhum avulso neste jogo.</p>
           ) : (
             <>
               <p className="text-sm">
@@ -136,7 +136,7 @@ function HistoryDetail({ id }) {
               </ul>
             </>
           )}
-          <p className="text-xs text-neutral-500">Mensalidades são cobradas por mês: veja no Financeiro.</p>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">Mensalidades são cobradas por mês: veja no Financeiro.</p>
         </Card>
       </section>
     </div>
@@ -176,5 +176,5 @@ function plural(count, singular, pluralForm) {
 }
 
 function SectionTitle({ children }) {
-  return <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-500 dark:text-neutral-400">{children}</h3>
+  return <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-600 dark:text-neutral-400">{children}</h3>
 }

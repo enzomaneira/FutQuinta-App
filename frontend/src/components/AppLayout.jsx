@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router'
 
 import BottomNav, { NAV_ITEMS } from './BottomNav.jsx'
 import MoreSheet from './MoreSheet.jsx'
+import OfflineBanner from './OfflineBanner.jsx'
 
 const EXTRA_TITLES = {
   '/avulsos': 'Avulsos',
@@ -59,6 +60,7 @@ export default function AppLayout() {
             Mais
           </button>
         </div>
+        <OfflineBanner />
       </header>
 
       {/* pb-24 deixa espaço para a navegação inferior fixa */}

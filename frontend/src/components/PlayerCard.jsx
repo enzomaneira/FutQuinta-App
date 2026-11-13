@@ -25,7 +25,7 @@ export default function PlayerCard({ player, showType = false }) {
             </Badge>
           )}
           {player.phone && (
-            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            <span className="text-xs text-neutral-600 dark:text-neutral-400">
               {formatPhone(player.phone)}
             </span>
           )}

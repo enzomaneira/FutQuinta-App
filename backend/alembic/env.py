@@ -9,7 +9,9 @@ from app.core.db import Base
 
 config = context.config
 if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+    # Não desliga os loggers do app (importa quando as migrations rodam no
+    # mesmo processo, como nos testes)
+    fileConfig(config.config_file_name, disable_existing_loggers=False)
 
 # Permite que os testes passem outra URL via config; senão usa DATABASE_URL
 if not config.get_main_option("sqlalchemy.url"):

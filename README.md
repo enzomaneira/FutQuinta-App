@@ -10,6 +10,31 @@ avulsos, coletes, mensalidades e caixa.
 As regras de negócio ficam em `backend/app/services/`, separadas das rotas,
 para o bot de WhatsApp da Fase 2 reaproveitar.
 
+## Como funciona
+
+**Lista semanal**
+- Vagas por posição (padrão 2 goleiros + 15 de linha). Vaga de goleiro só para
+  goleiro; de linha só para linha. O app avisa quando falta goleiro.
+- Mensalistas entram como pendentes e seguram a vaga até o prazo de confirmação.
+  Quem desmarca libera a vaga na hora; desmarcar a partir do horário de
+  "em cima da hora" (padrão quinta 18h) fica registrado.
+- Avulsos entram numa fila por ordem de candidatura e são chamados quando há
+  vaga. Avulso confirmado gera cobrança de R$ 25; se não for, fica isento.
+
+**Rotina automática** (a cada minuto, idempotente, horários lidos das Configurações)
+| Quando (padrão) | O que faz |
+|---|---|
+| Terça 10h | Cria o jogo de quinta e abre a lista com os mensalistas pendentes (só até o prazo de confirmação) |
+| Quinta 12h | Pendentes perdem a vaga garantida; a vaga vai para os avulsos |
+| Após o jogo (23h) | Confirmados viram "compareceu"; o organizador corrige as faltas |
+| Dia 1 | Gera as mensalidades (R$ 59, vencimento dia 15) e lança o aluguel da quadra |
+| Diariamente | Cobranças vencidas e não pagas viram "atrasadas" (mensalidade: dia 16) |
+
+Se o servidor ficar fora do ar, a rotina recupera o atraso quando volta.
+
+**Caixa** = saldo inicial + tudo recebido − despesas. Estatísticas do perfil e o
+caixa são sempre calculados a partir dos registros (sem contadores duplicados).
+
 ## Pré-requisitos
 
 - Python 3.12
@@ -53,8 +78,14 @@ cd backend
 pytest
 ```
 
-Usam o banco `futquinta_test` (variável `TEST_DATABASE_URL`). Cada teste roda
-numa transação desfeita no final.
+```bash
+cd frontend
+npm test
+```
+
+O backend usa o banco `futquinta_test` (variável `TEST_DATABASE_URL`); cada
+teste roda numa transação desfeita no final. O GitHub Actions
+(`.github/workflows/ci.yml`) roda backend e frontend a cada push na `main`.
 
 ## Migrations
 

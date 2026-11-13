@@ -31,15 +31,15 @@ export default function HomePage() {
 
       <div className="grid grid-cols-2 gap-3">
         <Link to="/financeiro" className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-900">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Caixa atual</p>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">Caixa atual</p>
           <p className={`text-xl font-bold tabular-nums ${cash.balance_cents < 0 ? 'text-red-600 dark:text-red-400' : ''}`}>
             {formatMoney(cash.balance_cents)}
           </p>
         </Link>
         <Link to="/financeiro" className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-900">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Em aberto</p>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">Em aberto</p>
           <p className="text-xl font-bold tabular-nums">{formatMoney(open.total_cents)}</p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">
             {open.count} cobrança{open.count === 1 ? '' : 's'}
             {open.overdue > 0 && <span className="font-semibold text-red-700 dark:text-red-300"> · {open.overdue} atrasada{open.overdue === 1 ? '' : 's'}</span>}
           </p>
@@ -77,7 +77,7 @@ export default function HomePage() {
             {venue.address}
           </p>
         </div>
-        <Suspense fallback={<div className="h-44 animate-pulse rounded-xl bg-neutral-200 dark:bg-neutral-800" />}>
+        <Suspense fallback={<div className="h-44 motion-safe:animate-pulse rounded-xl bg-neutral-200 dark:bg-neutral-800" />}>
           <VenueMap lat={venue.lat} lng={venue.lng} label={venue.name} />
         </Suspense>
         <a
@@ -98,7 +98,7 @@ function NextGame({ game }) {
     return (
       <Card className="space-y-2">
         <p className="font-semibold">Nenhum jogo agendado</p>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
           A lista abre sozinha no horário definido em Configurações, ou crie um jogo pelo Calendário.
         </p>
         <Link to="/calendario" className={linkClass}>
@@ -114,11 +114,11 @@ function NextGame({ game }) {
     <Link to="/jogo" className="block rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-900">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">
             {game.status === 'played' ? 'Último jogo' : 'Próximo jogo'}
           </p>
           <h2 className="text-lg font-bold capitalize">{formatGameDate(game.local_date)}</h2>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
             {formatTime(game.start_time)} às {formatTime(game.end_time)}
           </p>
         </div>
@@ -126,8 +126,8 @@ function NextGame({ game }) {
       </div>
       <p className="mt-2">
         <span className="text-4xl font-bold tabular-nums">{game.occupied}</span>
-        <span className="text-xl text-neutral-500">/{game.capacity}</span>
-        <span className="ml-2 text-sm text-neutral-500 dark:text-neutral-400">na lista</span>
+        <span className="text-xl text-neutral-600 dark:text-neutral-400">/{game.capacity}</span>
+        <span className="ml-2 text-sm text-neutral-600 dark:text-neutral-400">na lista</span>
       </p>
       {game.editable && missingGk > 0 && (
         <p className="mt-2 flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2 text-sm font-medium text-amber-900 dark:bg-amber-950/40 dark:text-amber-100">

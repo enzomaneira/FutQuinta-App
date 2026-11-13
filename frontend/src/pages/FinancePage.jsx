@@ -83,12 +83,12 @@ function CashCard() {
   const { data: cash } = useCash()
   return (
     <Card>
-      <p className="text-sm text-neutral-500 dark:text-neutral-400">Caixa atual</p>
+      <p className="text-sm text-neutral-600 dark:text-neutral-400">Caixa atual</p>
       <p className={`text-3xl font-bold tabular-nums ${cash && cash.balance_cents < 0 ? 'text-red-600 dark:text-red-400' : ''}`}>
         {cash ? formatMoney(cash.balance_cents) : '…'}
       </p>
       {cash && (
-        <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+        <p className="mt-1 text-xs text-neutral-600 dark:text-neutral-400">
           Saldo inicial {formatMoney(cash.initial_cents)} + recebido {formatMoney(cash.received_cents)} − despesas{' '}
           {formatMoney(cash.expenses_cents)}
         </p>
@@ -127,7 +127,7 @@ function ChargeList({ charges, showGame = false }) {
             <li key={c.id} className="flex min-h-16 items-center gap-2 rounded-2xl bg-white py-2 pr-2 pl-3 shadow-sm dark:bg-neutral-900">
               <button type="button" onClick={() => setSelected(c)} className="min-h-11 min-w-0 flex-1 text-left" aria-label={`Opções de ${c.player_name}`}>
                 <span className="block truncate font-semibold">{c.player_name}</span>
-                <span className="mt-0.5 flex flex-wrap items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+                <span className="mt-0.5 flex flex-wrap items-center gap-1 text-xs text-neutral-600 dark:text-neutral-400">
                   <Badge tone={status.tone}>{status.label}</Badge>
                   <span className="tabular-nums">{formatMoney(c.amount_cents)}</span>
                   <span>
@@ -137,7 +137,7 @@ function ChargeList({ charges, showGame = false }) {
                 </span>
               </button>
               {open && (
-                <Button className="min-h-10 shrink-0 px-3 text-sm" disabled={action.isPending} onClick={() => run(c, 'pay', { method: 'pix' }, `${c.player_name}: pago via Pix`)}>
+                <Button className="shrink-0 px-3 text-sm" disabled={action.isPending} onClick={() => run(c, 'pay', { method: 'pix' }, `${c.player_name}: pago via Pix`)}>
                   Marcar pago
                 </Button>
               )}
@@ -263,7 +263,7 @@ function Expenses({ month }) {
               <li key={e.id} className="flex min-h-16 items-center gap-2 rounded-2xl bg-white py-2 pr-2 pl-3 shadow-sm dark:bg-neutral-900">
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold">{e.description}</span>
-                  <span className="mt-0.5 flex flex-wrap items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+                  <span className="mt-0.5 flex flex-wrap items-center gap-1 text-xs text-neutral-600 dark:text-neutral-400">
                     <Badge>{EXPENSE_CATEGORY[e.category]}</Badge>
                     {e.type === 'fixed' && <Badge tone="blue">Fixa</Badge>}
                     <span>{formatShortDate(e.date)}</span>
@@ -272,7 +272,7 @@ function Expenses({ month }) {
                 <span className="shrink-0 font-semibold tabular-nums text-red-700 dark:text-red-300">
                   − {formatMoney(e.amount_cents)}
                 </span>
-                <Button variant="ghost" className="min-h-10 shrink-0 px-2 text-sm" onClick={() => handleDelete(e)} aria-label={`Apagar ${e.description}`}>
+                <Button variant="ghost" className="shrink-0 px-2 text-sm" onClick={() => handleDelete(e)} aria-label={`Apagar ${e.description}`}>
                   Apagar
                 </Button>
               </li>
@@ -353,11 +353,11 @@ function Statement({ month }) {
     <div className="space-y-3">
       <Card className="grid grid-cols-2 divide-x divide-neutral-200 p-0 dark:divide-neutral-800">
         <div className="px-4 py-3">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Início do mês</p>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">Início do mês</p>
           <p className="font-semibold tabular-nums">{formatMoney(data.opening_cents)}</p>
         </div>
         <div className="px-4 py-3">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">Fim do mês</p>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">Fim do mês</p>
           <p className="font-semibold tabular-nums">{formatMoney(data.closing_cents)}</p>
         </div>
       </Card>
@@ -369,10 +369,10 @@ function Statement({ month }) {
             const income = e.amount_cents > 0
             return (
               <li key={i} className="flex min-h-14 items-center gap-3 px-4 py-2">
-                <span className="w-10 shrink-0 text-xs text-neutral-500">{formatShortDate(e.day)}</span>
+                <span className="w-10 shrink-0 text-xs text-neutral-600 dark:text-neutral-400">{formatShortDate(e.day)}</span>
                 <span className="min-w-0 flex-1 text-sm">
                   <span className="block truncate">{e.description}</span>
-                  <span className="text-xs text-neutral-500">Saldo {formatMoney(e.balance_cents)}</span>
+                  <span className="text-xs text-neutral-600 dark:text-neutral-400">Saldo {formatMoney(e.balance_cents)}</span>
                 </span>
                 <span className={`shrink-0 text-sm font-semibold tabular-nums ${income ? 'text-brand-700 dark:text-brand-500' : 'text-red-700 dark:text-red-300'}`}>
                   {income ? '+ ' : '− '}

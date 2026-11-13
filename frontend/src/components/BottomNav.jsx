@@ -25,7 +25,7 @@ export default function BottomNav() {
                 `flex min-h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${
                   isActive
                     ? 'text-brand-700 dark:text-brand-500'
-                    : 'text-neutral-500 dark:text-neutral-400'
+                    : 'text-neutral-600 dark:text-neutral-400'
                 }`
               }
             >

@@ -9,6 +9,7 @@ import {
   useSettings,
   useUsers,
 } from '../features/settings.js'
+import { parseMoney } from '../lib/format.js'
 
 const WEEKDAY_OPTIONS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
 
@@ -75,10 +76,9 @@ function fromInput(field, text) {
   const value = text.trim()
   switch (field.type) {
     case 'money': {
-      const normalized = value.replace(/R\$|\s/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.')
-      const number = Number(normalized)
-      if (normalized === '' || Number.isNaN(number)) throw new Error(`${field.label}: valor inválido`)
-      return Math.round(number * 100)
+      const cents = parseMoney(value)
+      if (!Number.isFinite(cents)) throw new Error(`${field.label}: valor inválido`)
+      return cents
     }
     case 'int':
     case 'weekday': {
@@ -140,7 +140,7 @@ function SettingsSection({ section, settings }) {
   return (
     <Card as="form" onSubmit={handleSubmit} className="space-y-3">
       <h2 className="text-base font-semibold">{section.title}</h2>
-      {section.note && <p className="text-xs text-neutral-500 dark:text-neutral-400">{section.note}</p>}
+      {section.note && <p className="text-xs text-neutral-600 dark:text-neutral-400">{section.note}</p>}
       {section.fields.map((field) =>
         field.type === 'weekday' ? (
           <label key={field.key} className="block text-sm font-medium">
@@ -206,7 +206,7 @@ function OrganizersSection() {
               {isAdmin && user.id !== me.id && (
                 <Button
                   variant="secondary"
-                  className="min-h-10 shrink-0 px-3 text-sm"
+                  className="shrink-0 px-3 text-sm"
                   disabled={setActive.isPending}
                   onClick={() => setActive.mutate({ id: user.id, active: !user.active })}
                 >
@@ -220,7 +220,7 @@ function OrganizersSection() {
       {isAdmin ? (
         <NewOrganizerForm />
       ) : (
-        <p className="text-xs text-neutral-500">Só administradores adicionam ou removem organizadores.</p>
+        <p className="text-xs text-neutral-600 dark:text-neutral-400">Só administradores adicionam ou removem organizadores.</p>
       )}
     </Card>
   )

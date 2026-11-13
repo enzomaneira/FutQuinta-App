@@ -63,7 +63,7 @@ function MonthlySlots() {
     <Card className="grid grid-cols-2 divide-x divide-neutral-200 p-0 dark:divide-neutral-800">
       {items.map(([label, { used, total }]) => (
         <div key={label} className="px-4 py-3">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">{label} mensalistas</p>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">{label} mensalistas</p>
           <p className="text-lg font-semibold">
             {used}/{total}
             {used < total && (

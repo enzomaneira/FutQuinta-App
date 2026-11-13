@@ -68,7 +68,7 @@ export default function CalendarPage() {
 
   return (
     <div className="space-y-4">
-      <Card className="p-3">
+      <Card className="px-2 py-3">
         <div className="mb-2 flex items-center justify-between">
           <button type="button" onClick={() => move(-1)} aria-label="Mês anterior" className="flex size-11 items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800">
             <ChevronLeft size={22} aria-hidden />
@@ -81,9 +81,9 @@ export default function CalendarPage() {
           </button>
         </div>
 
-        <div className="grid grid-cols-7 gap-1 text-center">
+        <div className="grid grid-cols-7 gap-px text-center">
           {WEEK_HEADER.map((d, i) => (
-            <div key={i} className={`py-1 text-xs font-semibold ${i === gameJsDay ? 'text-brand-700 dark:text-brand-500' : 'text-neutral-500'}`}>
+            <div key={i} className={`py-1 text-xs font-semibold ${i === gameJsDay ? 'text-brand-700 dark:text-brand-500' : 'text-neutral-600 dark:text-neutral-400'}`}>
               {d}
             </div>
           ))}
@@ -119,18 +119,18 @@ export default function CalendarPage() {
           })}
         </div>
 
-        <p className="mt-3 text-xs text-neutral-500 dark:text-neutral-400">
+        <p className="mt-3 text-xs text-neutral-600 dark:text-neutral-400">
           Dias de jogo têm borda verde; toque para abrir ou criar o jogo. “Venc.” marca o vencimento
           da mensalidade (dia {data?.due_day ?? 15}).
         </p>
       </Card>
 
       <section>
-        <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-500 dark:text-neutral-400">Jogos do mês</h3>
+        <h3 className="mb-2 px-1 text-sm font-semibold text-neutral-600 dark:text-neutral-400">Jogos do mês</h3>
         {isPending ? (
           <LoadingList />
         ) : data.games.length === 0 ? (
-          <p className="px-1 text-sm text-neutral-500">Nenhum jogo neste mês.</p>
+          <p className="px-1 text-sm text-neutral-600 dark:text-neutral-400">Nenhum jogo neste mês.</p>
         ) : (
           <ul className="space-y-2">
             {data.games.map((g) => (
@@ -138,7 +138,7 @@ export default function CalendarPage() {
                 <Link to={`/jogos/${g.id}`} className="flex min-h-14 items-center justify-between gap-2 rounded-2xl bg-white px-4 py-3 shadow-sm dark:bg-neutral-900">
                   <span>
                     <span className="block font-semibold capitalize">{formatGameDate(g.local_date)}</span>
-                    <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                    <span className="text-sm text-neutral-600 dark:text-neutral-400">
                       {formatTime(g.start_time)} · {g.occupied}/{g.capacity} na lista
                     </span>
                   </span>

@@ -64,7 +64,7 @@ export function Segmented({ options, value, onChange, label }) {
             role="radio"
             aria-checked={selected}
             onClick={() => onChange(option.value)}
-            className={`min-h-10 rounded-lg px-2 text-sm font-semibold ${
+            className={`min-h-11 rounded-lg px-2 text-sm font-semibold ${
               selected
                 ? 'bg-white text-neutral-900 shadow-sm dark:bg-neutral-950 dark:text-neutral-100'
                 : 'text-neutral-600 dark:text-neutral-400'
@@ -86,14 +86,14 @@ export function TextField({ label, hint, ...props }) {
     <label className="block text-sm font-medium">
       {label}
       <input className={inputClass} {...props} />
-      {hint && <span className="mt-1 block text-xs text-neutral-500">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs text-neutral-600 dark:text-neutral-400">{hint}</span>}
     </label>
   )
 }
 
 export function EmptyState({ children }) {
   return (
-    <p className="rounded-2xl border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500 dark:border-neutral-700">
+    <p className="rounded-2xl border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-600 dark:text-neutral-400 dark:border-neutral-700">
       {children}
     </p>
   )
@@ -103,7 +103,7 @@ export function LoadingList() {
   return (
     <div className="space-y-2" aria-busy="true" aria-label="Carregando">
       {[0, 1, 2].map((i) => (
-        <div key={i} className="h-16 animate-pulse rounded-2xl bg-neutral-200 dark:bg-neutral-800" />
+        <div key={i} className="h-16 motion-safe:animate-pulse rounded-2xl bg-neutral-200 dark:bg-neutral-800" />
       ))}
     </div>
   )
